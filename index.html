@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salary Dog — $SalaryDog</title>
+  <meta name="description" content="Salary Dog is at 42.6k running on TikTok! The cutest Solana meme dog. $SalaryDog" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fur: '#E5A95F',
+            furDeep: '#D4894A',
+            cream: '#FDF3E3',
+            parchment: '#F5E6D3',
+            cocoa: '#513628',
+            cocoaSoft: '#6B4A38',
+            nose: '#2D4263',
+            grass: '#7BA05B',
+            blush: '#F2A0A0',
+          },
+          fontFamily: {
+            display: ['"Baloo 2"', 'cursive'],
+            body: ['Nunito', 'sans-serif'],
+          },
+          boxShadow: {
+            chunky: '6px 6px 0 #513628',
+            chunkyHover: '3px 3px 0 #513628',
+          },
+          keyframes: {
+            wiggle: {
+              '0%, 100%': { transform: 'rotate(-3deg)' },
+              '50%': { transform: 'rotate(3deg)' },
+            },
+            floaty: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            bounceIn: {
+              '0%': { transform: 'scale(0.8)', opacity: '0' },
+              '60%': { transform: 'scale(1.08)' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+            marquee: {
+              '0%': { transform: 'translateX(0)' },
+              '100%': { transform: 'translateX(-50%)' },
+            },
+            shineSweep: {
+              '0%': { transform: 'translateX(-120%) skewX(-18deg)' },
+              '100%': { transform: 'translateX(220%) skewX(-18deg)' },
+            },
+          },
+          animation: {
+            wiggle: 'wiggle 2.2s ease-in-out infinite',
+            floaty: 'floaty 3.5s ease-in-out infinite',
+            bounceIn: 'bounceIn 0.6s ease-out',
+            marquee: 'marquee 22s linear infinite',
+            shineSweep: 'shineSweep 0.85s ease-in-out',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      --cream: #FDF3E3;
+      --parchment: #F5E6D3;
+      --cocoa: #513628;
+      --fur: #E5A95F;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Nunito, sans-serif;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(229, 169, 95, 0.35), transparent 45%),
+        radial-gradient(ellipse at 85% 20%, rgba(242, 160, 160, 0.22), transparent 40%),
+        radial-gradient(ellipse at 50% 90%, rgba(123, 160, 91, 0.18), transparent 45%),
+        linear-gradient(180deg, #FDF3E3 0%, #F5E6D3 45%, #E8D4B8 100%);
+      color: #513628;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    a, button, .interactive { cursor: none; }
+
+    .font-display { font-family: "Baloo 2", cursive; }
+
+    /* Paper grain */
+    body::before {
+      content: "";
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.07;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .site { position: relative; z-index: 1; }
+
+    /* Custom dog cursor */
+    #dog-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      font-size: 32px;
+      line-height: 1;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-40%, -20%);
+      transition: transform 0.08s ease-out;
+      filter: drop-shadow(2px 2px 0 rgba(81, 54, 40, 0.25));
+      will-change: transform;
+    }
+
+    #dog-cursor.clicked { transform: translate(-40%, -20%) scale(0.85); }
+    #dog-cursor.bone-mode { font-size: 30px; }
+
+    .paw-print {
+      position: fixed;
+      font-size: 20px;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.75;
+      will-change: transform, opacity;
+      transform: translate(-50%, -50%);
+      filter: drop-shadow(1px 1px 0 rgba(81, 54, 40, 0.2));
+    }
+
+    #paw-2 { font-size: 17px; opacity: 0.55; }
+    #paw-3 { font-size: 14px; opacity: 0.35; }
+
+    .chunky-btn {
+      border: 4px solid #513628;
+      box-shadow: 6px 6px 0 #513628;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .chunky-btn:hover {
+      transform: translate(3px, 3px);
+      box-shadow: 3px 3px 0 #513628;
+    }
+
+    .chunky-btn:active {
+      transform: translate(6px, 6px);
+      box-shadow: 0 0 0 #513628;
+    }
+
+    .logo-bob {
+      animation: floaty 3.2s ease-in-out infinite;
+      filter: drop-shadow(0 12px 0 rgba(81, 54, 40, 0.12));
+      transform-style: preserve-3d;
+    }
+
+    .logo-bob.watching {
+      animation: none;
+    }
+
+    /* Image shine + window watch on hover */
+    .shine-host {
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      perspective: 800px;
+      transition: transform 0.15s ease-out, box-shadow 0.35s ease;
+      will-change: transform;
+    }
+
+    .shine-host::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(
+          420px circle at var(--watch-x, 50%) var(--watch-y, 50%),
+          rgba(255, 255, 255, 0.55) 0%,
+          rgba(255, 248, 220, 0.18) 28%,
+          transparent 58%
+        ),
+        linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.22) 0%,
+          transparent 42%,
+          transparent 58%,
+          rgba(81, 54, 40, 0.08) 100%
+        );
+      opacity: 0;
+      pointer-events: none;
+      z-index: 6;
+      mix-blend-mode: soft-light;
+      transition: opacity 0.25s ease;
+    }
+
+    .shine-host.watching::before {
+      opacity: 1;
+    }
+
+    .shine-host::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.15) 42%,
+        rgba(255, 255, 255, 0.75) 50%,
+        rgba(255, 248, 220, 0.35) 56%,
+        transparent 65%
+      );
+      transform: translateX(-120%) skewX(-18deg);
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+    }
+
+    .shine-host:hover::after,
+    .shine-host.shine-play::after {
+      opacity: 1;
+      animation: shineSweep 0.85s ease-in-out;
+    }
+
+    .shine-host img {
+      transition: filter 0.35s ease, transform 0.15s ease-out;
+      transform: translateZ(0);
+      will-change: transform;
+    }
+
+    .shine-host.watching img {
+      filter: brightness(1.1) saturate(1.1) contrast(1.04);
+      transform: translateZ(28px) scale(1.04);
+    }
+
+    .shine-host.shine-glow.watching {
+      box-shadow:
+        6px 6px 0 #513628,
+        0 0 28px rgba(229, 169, 95, 0.55),
+        0 0 60px rgba(255, 248, 220, 0.35);
+    }
+
+    /* Glass window edge highlight */
+    .shine-host.watching {
+      z-index: 2;
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 22s linear infinite;
+    }
+
+    .step-num {
+      background: #E5A95F;
+      border: 3px solid #513628;
+      box-shadow: 4px 4px 0 #513628;
+    }
+
+    .hero-banner {
+      border: 5px solid #513628;
+      box-shadow: 10px 10px 0 #513628;
+    }
+
+    .ca-box {
+      border: 4px solid #513628;
+      box-shadow: 5px 5px 0 #513628;
+      background: rgba(253, 243, 227, 0.92);
+    }
+
+    .embed-frame {
+      border: 5px solid #513628;
+      box-shadow: 8px 8px 0 #513628;
+      background: #1a1a1a;
+    }
+
+    .social-orb {
+      border: 4px solid #513628;
+      box-shadow: 4px 4px 0 #513628;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .social-orb:hover {
+      transform: translate(2px, 2px) scale(1.06);
+      box-shadow: 2px 2px 0 #513628;
+    }
+
+    .sparkle {
+      position: absolute;
+      color: #E85A5A;
+      font-size: 1.1rem;
+      animation: floaty 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @media (max-width: 640px) {
+      #dog-cursor { font-size: 26px; width: 28px; height: 28px; }
+      .hero-banner { box-shadow: 6px 6px 0 #513628; }
+    }
+
+    /* Soft grass strip */
+    .grass-strip {
+      height: 28px;
+      background:
+        radial-gradient(circle at 10% 100%, #7BA05B 12px, transparent 13px),
+        radial-gradient(circle at 22% 100%, #8BB56A 10px, transparent 11px),
+        radial-gradient(circle at 35% 100%, #7BA05B 14px, transparent 15px),
+        radial-gradient(circle at 48% 100%, #6A914C 11px, transparent 12px),
+        radial-gradient(circle at 62% 100%, #8BB56A 13px, transparent 14px),
+        radial-gradient(circle at 75% 100%, #7BA05B 10px, transparent 11px),
+        radial-gradient(circle at 88% 100%, #6A914C 14px, transparent 15px),
+        linear-gradient(180deg, transparent 40%, #7BA05B 40%);
+    }
+  </style>
+</head>
+<body>
+  <div id="dog-cursor" aria-hidden="true">🐕</div>
+  <div class="paw-print" id="paw-1" aria-hidden="true">🐾</div>
+  <div class="paw-print" id="paw-2" aria-hidden="true">🐾</div>
+  <div class="paw-print" id="paw-3" aria-hidden="true">🐾</div>
+
+  <div class="site">
+    <!-- Nav -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-cream/80 border-b-4 border-cocoa">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        <a href="#top" class="interactive flex items-center gap-2 group">
+          <span class="shine-host shine-glow inline-block w-11 h-11 rounded-full border-3 border-cocoa overflow-hidden" style="border-width:3px">
+            <img src="logo.png" alt="Salary Dog logo" class="w-full h-full object-cover group-hover:animate-wiggle" />
+          </span>
+          <span class="font-display text-xl sm:text-2xl font-800 text-cocoa tracking-tight">Salary Dog</span>
+        </a>
+        <nav class="flex items-center gap-2 sm:gap-3">
+          <a href="https://t.me/SalaryDogSol" target="_blank" rel="noopener noreferrer" class="shine-host shine-glow social-orb interactive hidden sm:flex w-11 h-11 rounded-full overflow-hidden bg-cream items-center justify-center">
+            <img src="tg.png" alt="Telegram" class="w-full h-full object-cover" />
+          </a>
+          <a href="https://x.com/SalaryDogSol" target="_blank" rel="noopener noreferrer" class="shine-host shine-glow social-orb interactive hidden sm:flex w-11 h-11 rounded-full overflow-hidden bg-cream items-center justify-center">
+            <img src="x.png" alt="Twitter / X" class="w-full h-full object-cover" />
+          </a>
+          <a href="https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=TBA" target="_blank" rel="noopener noreferrer" class="chunky-btn interactive rounded-2xl bg-fur px-3 sm:px-4 py-2 font-display text-sm sm:text-base font-700 text-cocoa">
+            Buy Now
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Ticker -->
+    <div class="border-b-4 border-cocoa bg-fur overflow-hidden py-2">
+      <div class="ticker-track font-display text-cocoa text-lg font-700 tracking-wide">
+        <span class="px-6">🐕 salary dog is at 42.6k running on tiktok! &nbsp;•&nbsp; $SalaryDog &nbsp;•&nbsp; 🦴 fetch those bags &nbsp;•&nbsp; good boy gains &nbsp;•&nbsp; Solana's cutest salary &nbsp;•&nbsp;</span>
+        <span class="px-6">🐕 salary dog is at 42.6k running on tiktok! &nbsp;•&nbsp; $SalaryDog &nbsp;•&nbsp; 🦴 fetch those bags &nbsp;•&nbsp; good boy gains &nbsp;•&nbsp; Solana's cutest salary &nbsp;•&nbsp;</span>
+      </div>
+    </div>
+
+    <main id="top">
+      <!-- Hero -->
+      <section class="relative max-w-6xl mx-auto px-4 pt-8 sm:pt-12 pb-6">
+        <div class="text-center mb-6 sm:mb-8 relative">
+          <span class="sparkle" style="left:8%; top:0; animation-delay:0.2s">✦</span>
+          <span class="sparkle" style="right:10%; top:12%; animation-delay:0.8s">✦</span>
+          <span class="sparkle" style="left:18%; bottom:10%; animation-delay:1.2s">♡</span>
+          <span class="sparkle" style="right:16%; bottom:0; animation-delay:0.5s">♡</span>
+
+          <div class="shine-host shine-glow logo-bob interactive mx-auto mb-4 w-36 h-36 sm:w-48 sm:h-48 rounded-full border-4 border-cocoa bg-parchment overflow-hidden shadow-chunky ring-4 ring-fur/60">
+            <img src="logo.png" alt="Salary Dog" class="w-full h-full object-cover object-center scale-110" />
+          </div>
+          <h1 class="font-display text-5xl sm:text-7xl md:text-8xl font-800 text-cocoa leading-none tracking-tight drop-shadow-[3px_3px_0_rgba(229,169,95,0.9)]">
+            Salary Dog
+          </h1>
+          <p class="mt-2 font-display text-xl sm:text-2xl text-cocoaSoft">
+            $<span class="text-furDeep">SalaryDog</span>
+          </p>
+          <p class="mt-4 max-w-xl mx-auto font-body text-base sm:text-lg text-cocoaSoft font-700 leading-relaxed">
+            salary dog is at <span class="text-furDeep font-800">42.6k</span> running on tiktok! the goodest boy on Solana is clocking in for gains.
+          </p>
+
+          <div class="mt-7 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <a href="https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=TBA" target="_blank" rel="noopener noreferrer" class="chunky-btn interactive rounded-2xl bg-fur px-6 py-3 font-display text-lg sm:text-xl font-800 text-cocoa">
+              🦴 Buy Now
+            </a>
+            <a href="https://dexscreener.com/solana/TBA" target="_blank" rel="noopener noreferrer" class="chunky-btn interactive rounded-2xl bg-cream px-6 py-3 font-display text-lg sm:text-xl font-800 text-cocoa">
+              📈 Chart
+            </a>
+          </div>
+        </div>
+
+        <div class="relative shine-host shine-glow hero-banner interactive rounded-[1.5rem] sm:rounded-[2rem]">
+          <img src="banner.png" alt="Salary Dog banner" class="w-full rounded-[1.5rem] sm:rounded-[2rem] object-cover" />
+        </div>
+        <div class="grass-strip -mt-1 rounded-b-2xl opacity-90"></div>
+      </section>
+
+      <!-- CA -->
+      <section class="max-w-6xl mx-auto px-4 py-10 sm:py-14">
+        <div class="text-center mb-5">
+          <h2 class="font-display text-3xl sm:text-4xl font-800 text-cocoa">Contract Address</h2>
+          <p class="mt-1 text-cocoaSoft font-700">tap to copy · verify before you fetch</p>
+        </div>
+        <div class="ca-box interactive mx-auto max-w-3xl rounded-2xl px-4 py-4 sm:px-6 sm:py-5 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+          <code id="ca-text" class="flex-1 text-center sm:text-left font-bold text-sm sm:text-base md:text-lg break-all text-cocoa select-all">TBA</code>
+          <button id="copy-ca" type="button" class="chunky-btn interactive shrink-0 rounded-xl bg-fur px-5 py-2.5 font-display text-base font-800 text-cocoa">
+            Copy CA
+          </button>
+        </div>
+        <p id="copy-toast" class="text-center mt-3 font-display text-furDeep font-700 opacity-0 transition-opacity duration-300">copied! good boy ✓</p>
+      </section>
+
+      <!-- How to Buy -->
+      <section id="how-to-buy" class="max-w-6xl mx-auto px-4 py-8 sm:py-12">
+        <div class="text-center mb-8 sm:mb-10">
+          <h2 class="font-display text-3xl sm:text-5xl font-800 text-cocoa">How to Buy</h2>
+          <p class="mt-2 text-cocoaSoft font-700 text-base sm:text-lg">four easy steps to get $SalaryDog on Solana</p>
+        </div>
+
+        <ol class="grid sm:grid-cols-2 gap-5 sm:gap-6 max-w-4xl mx-auto">
+          <li class="interactive relative rounded-3xl border-4 border-cocoa bg-cream/90 p-5 sm:p-6 shadow-chunky">
+            <span class="step-num absolute -top-3 -left-3 w-11 h-11 rounded-full font-display font-800 text-xl text-cocoa flex items-center justify-center">1</span>
+            <h3 class="font-display text-xl sm:text-2xl font-800 text-cocoa mt-1">Get a Solana Wallet</h3>
+            <p class="mt-2 text-cocoaSoft font-700 leading-relaxed">Install Phantom, Solflare, or Backpack. Create a wallet and keep your seed phrase safe — no sharing, good boy.</p>
+          </li>
+          <li class="interactive relative rounded-3xl border-4 border-cocoa bg-cream/90 p-5 sm:p-6 shadow-chunky">
+            <span class="step-num absolute -top-3 -left-3 w-11 h-11 rounded-full font-display font-800 text-xl text-cocoa flex items-center justify-center">2</span>
+            <h3 class="font-display text-xl sm:text-2xl font-800 text-cocoa mt-1">Fund with SOL</h3>
+            <p class="mt-2 text-cocoaSoft font-700 leading-relaxed">Buy SOL on an exchange, then send it to your Solana wallet address. You'll need SOL for $SalaryDog + fees.</p>
+          </li>
+          <li class="interactive relative rounded-3xl border-4 border-cocoa bg-cream/90 p-5 sm:p-6 shadow-chunky">
+            <span class="step-num absolute -top-3 -left-3 w-11 h-11 rounded-full font-display font-800 text-xl text-cocoa flex items-center justify-center">3</span>
+            <h3 class="font-display text-xl sm:text-2xl font-800 text-cocoa mt-1">Open Pump Swap</h3>
+            <p class="mt-2 text-cocoaSoft font-700 leading-relaxed">Hit <strong>Buy Now</strong> or go to pump.fun swap. Connect your wallet and make sure the output token is $SalaryDog.</p>
+          </li>
+          <li class="interactive relative rounded-3xl border-4 border-cocoa bg-cream/90 p-5 sm:p-6 shadow-chunky">
+            <span class="step-num absolute -top-3 -left-3 w-11 h-11 rounded-full font-display font-800 text-xl text-cocoa flex items-center justify-center">4</span>
+            <h3 class="font-display text-xl sm:text-2xl font-800 text-cocoa mt-1">Swap &amp; HODL</h3>
+            <p class="mt-2 text-cocoaSoft font-700 leading-relaxed">Enter how much SOL you want to spend, confirm the swap, and welcome Salary Dog to your wallet. fetch those bags.</p>
+          </li>
+        </ol>
+
+        <div class="mt-8 flex justify-center">
+          <a href="https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=TBA" target="_blank" rel="noopener noreferrer" class="chunky-btn interactive rounded-2xl bg-fur px-8 py-3.5 font-display text-xl font-800 text-cocoa">
+            Buy $SalaryDog
+          </a>
+        </div>
+      </section>
+
+      <!-- Chart embed -->
+      <section id="chart" class="max-w-6xl mx-auto px-4 py-10 sm:py-14">
+        <div class="text-center mb-6">
+          <h2 class="font-display text-3xl sm:text-5xl font-800 text-cocoa">Live Chart</h2>
+          <p class="mt-2 text-cocoaSoft font-700">watch the good boy run on DexScreener</p>
+        </div>
+        <div class="embed-frame rounded-2xl overflow-hidden aspect-[16/11] sm:aspect-[16/9]">
+          <iframe
+            title="Salary Dog DexScreener chart"
+            class="w-full h-full"
+            src="https://dexscreener.com/solana/TBA?embed=1&loadChartSettings=0&trades=0&tabs=0&info=0&chartLeftToolbar=0&chartTheme=dark&theme=dark&chartStyle=0&chartType=usd&interval=15"
+            allow="clipboard-write"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="mt-5 flex justify-center">
+          <a href="https://dexscreener.com/solana/TBA" target="_blank" rel="noopener noreferrer" class="chunky-btn interactive rounded-2xl bg-cream px-6 py-3 font-display text-lg font-800 text-cocoa">
+            Open Full Chart
+          </a>
+        </div>
+      </section>
+
+      <!-- Community -->
+      <section class="max-w-6xl mx-auto px-4 py-8 sm:py-12 pb-16">
+        <div class="text-center mb-8">
+          <h2 class="font-display text-3xl sm:text-5xl font-800 text-cocoa">Join the Pack</h2>
+          <p class="mt-2 text-cocoaSoft font-700">bark with us on Telegram &amp; X</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+          <a href="https://t.me/SalaryDogSol" target="_blank" rel="noopener noreferrer" class="interactive group flex flex-col items-center gap-3">
+            <div class="shine-host shine-glow social-orb w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-cream">
+              <img src="tg.png" alt="Telegram" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200" />
+            </div>
+            <span class="font-display text-xl font-800 text-cocoa">Telegram</span>
+          </a>
+          <a href="https://x.com/SalaryDogSol" target="_blank" rel="noopener noreferrer" class="interactive group flex flex-col items-center gap-3">
+            <div class="shine-host shine-glow social-orb w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-cream">
+              <img src="x.png" alt="Twitter / X" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200" />
+            </div>
+            <span class="font-display text-xl font-800 text-cocoa">Twitter / X</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t-4 border-cocoa bg-cocoa text-cream">
+      <div class="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div class="flex items-center gap-3">
+          <img src="logo.png" alt="" class="w-10 h-10 rounded-full border-2 border-fur object-cover" />
+          <div>
+            <p class="font-display text-xl font-800">Salary Dog</p>
+            <p class="text-sm font-700 opacity-80">$SalaryDog · Solana</p>
+          </div>
+        </div>
+        <p class="font-display text-sm sm:text-base opacity-90">salary dog is at 42.6k running on tiktok! 🐕</p>
+        <p class="text-xs opacity-60 font-700">NFA · DYOR · meme coin vibes only</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const CONTRACT = 'TBA';
+      const cursor = document.getElementById('dog-cursor');
+      const paws = [
+        document.getElementById('paw-1'),
+        document.getElementById('paw-2'),
+        document.getElementById('paw-3'),
+      ];
+
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let cursorX = mouseX;
+      let cursorY = mouseY;
+      let onButton = false;
+
+      const trail = [
+        { x: mouseX, y: mouseY },
+        { x: mouseX, y: mouseY },
+        { x: mouseX, y: mouseY },
+      ];
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      document.addEventListener('mousedown', () => cursor.classList.add('clicked'));
+      document.addEventListener('mouseup', () => cursor.classList.remove('clicked'));
+
+      function setBoneCursor(active) {
+        onButton = active;
+        if (active) {
+          cursor.textContent = '🦴';
+          cursor.classList.add('bone-mode');
+        } else {
+          cursor.textContent = '🐕';
+          cursor.classList.remove('bone-mode');
+        }
+      }
+
+      document.querySelectorAll('.chunky-btn, button').forEach((btn) => {
+        btn.addEventListener('mouseenter', () => setBoneCursor(true));
+        btn.addEventListener('mouseleave', () => setBoneCursor(false));
+      });
+
+      // Shine + window-watch tilt that follows the mouse
+      document.querySelectorAll('.shine-host').forEach((el) => {
+        const maxTilt = el.classList.contains('hero-banner') ? 8 : 14;
+
+        el.addEventListener('mouseenter', () => {
+          el.classList.add('watching');
+          el.classList.remove('shine-play');
+          void el.offsetWidth;
+          el.classList.add('shine-play');
+        });
+
+        el.addEventListener('mousemove', (e) => {
+          const rect = el.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          const rotateY = (x - 0.5) * maxTilt * 2;
+          const rotateX = (0.5 - y) * maxTilt * 2;
+
+          el.style.setProperty('--watch-x', `${x * 100}%`);
+          el.style.setProperty('--watch-y', `${y * 100}%`);
+          el.style.transform =
+            `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+        });
+
+        el.addEventListener('mouseleave', () => {
+          el.classList.remove('watching', 'shine-play');
+          el.style.transform = '';
+          el.style.removeProperty('--watch-x');
+          el.style.removeProperty('--watch-y');
+        });
+
+        el.addEventListener('animationend', (e) => {
+          if (e.animationName === 'shineSweep') {
+            el.classList.remove('shine-play');
+          }
+        });
+      });
+
+      function animateCursor() {
+        cursorX += (mouseX - cursorX) * 0.38;
+        cursorY += (mouseY - cursorY) * 0.38;
+        const clicked = cursor.classList.contains('clicked');
+        cursor.style.left = '0';
+        cursor.style.top = '0';
+        cursor.style.transform = `translate(${cursorX - 14}px, ${cursorY - 8}px)` +
+          (clicked ? ' scale(0.85)' : '');
+
+        trail[0].x += (cursorX - 18 - trail[0].x) * 0.16;
+        trail[0].y += (cursorY + 14 - trail[0].y) * 0.16;
+        trail[1].x += (trail[0].x - 12 - trail[1].x) * 0.13;
+        trail[1].y += (trail[0].y + 10 - trail[1].y) * 0.13;
+        trail[2].x += (trail[1].x - 10 - trail[2].x) * 0.10;
+        trail[2].y += (trail[1].y + 8 - trail[2].y) * 0.10;
+
+        paws.forEach((paw, i) => {
+          paw.style.left = trail[i].x + 'px';
+          paw.style.top = trail[i].y + 'px';
+          paw.style.transform = `translate(-50%, -50%) rotate(${(i - 1) * 18}deg)`;
+          paw.style.opacity = onButton ? '0.25' : '';
+        });
+
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
+
+      // Copy CA
+      const copyBtn = document.getElementById('copy-ca');
+      const caText = document.getElementById('ca-text');
+      const toast = document.getElementById('copy-toast');
+      caText.textContent = CONTRACT;
+
+      async function copyCA() {
+        try {
+          await navigator.clipboard.writeText(CONTRACT);
+        } catch {
+          const range = document.createRange();
+          range.selectNodeContents(caText);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          document.execCommand('copy');
+          sel.removeAllRanges();
+        }
+        toast.style.opacity = '1';
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          copyBtn.textContent = 'Copy CA';
+        }, 1800);
+      }
+
+      copyBtn.addEventListener('click', copyCA);
+      caText.closest('.ca-box').addEventListener('click', (e) => {
+        if (e.target !== copyBtn) copyCA();
+      });
+    })();
+  </script>
+</body>
+</html>
